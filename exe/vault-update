@@ -1,0 +1,4 @@
+require 'vault-update/version'
+require 'vault-update'
+
+VaultUpdate.new.update
