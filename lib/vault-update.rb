@@ -1,4 +1,4 @@
-require "vault-update/version"
+require 'vault-update/version'
 require 'vault'
 require 'trollop'
 require 'json'
