@@ -3,7 +3,6 @@ require 'vault'
 require 'trollop'
 require 'json'
 require 'diffy'
-require 'byebug'
 
 class MissingInputError < StandardError; end
 class NoHistoryError < StandardError; end
@@ -26,7 +25,6 @@ class VaultUpdate
   private
 
   def update
-    # byebug
     if opts[:rollback]
       rollback_secret
     else
