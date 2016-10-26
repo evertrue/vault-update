@@ -17,31 +17,12 @@ class VaultUpdate
       end
     elsif opts[:last]
       puts JSON.pretty_generate(secret_history.sort_by { |ts, _data| ts }[-opts[:history]..-1][1])
+    elsif opts[:rollback]
+      rollback_secret
+    elsif opts[:current]
+      puts JSON.pretty_generate(vault_read(opts[:path]))
     else
       update
-    end
-  end
-
-  private
-
-  def update
-    if opts[:rollback]
-      rollback_secret
-    else
-      update_value = ARGV.pop
-      update_value = (
-        begin
-          JSON.parse update_value
-        rescue JSON::ParserError
-          update_value
-        end
-      )
-
-      update_key = ARGV.pop
-
-      raise(MissingInputError) unless (update_key && update_value)
-
-      update_secret update_key.to_sym => update_value
     end
   rescue MissingInputError, TypeError => e
     raise e unless e.class == TypeError && e.message == 'no implicit conversion of nil into String'
@@ -52,6 +33,27 @@ class VaultUpdate
   rescue NoHistoryError
     puts "ERROR: There is no history for #{opts[:path]}"
     exit 2
+  end
+
+  private
+
+  def update
+    update_value = ARGV.pop
+
+    # JSON is optional in the value field, so we have this funny business
+    update_value = (
+      begin
+        JSON.parse update_value
+      rescue JSON::ParserError
+        update_value
+      end
+    )
+
+    update_key = ARGV.pop
+
+    raise(MissingInputError) unless (update_key && update_value)
+
+    update_secret update_key.to_sym => update_value
   end
 
   def debug?
@@ -126,6 +128,7 @@ class VaultUpdate
         opt :path, 'Secret path to update', short: 'p', required: true, type: String
         opt :history, 'Show the last N entries of history', short: 's', type: Integer
         opt :last, 'Show the last value', short: 'l'
+        opt :current, 'Show the current contents of the secret', short: 'c'
       end
       raise 'VAULT_ADDR and VAULT_TOKEN must be set' unless (ENV['VAULT_ADDR'] && ENV['VAULT_TOKEN'])
       opts
