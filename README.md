@@ -1,41 +1,94 @@
 # VaultUpdate
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/vault/update`. To experiment with that code, run `bin/console` for an interactive prompt.
+A tool to safely update Vault. Existing data is stored in history (which means rollbacks are supported). Diffs are printed. Individual keys can be updated at once.
 
-TODO: Delete this and the text above, and describe your gem
+# Installation
 
-## Installation
+Install it yourself:
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'vault-update'
+```
+$ gem install vault-update
 ```
 
-And then execute:
+# Usage
 
-    $ bundle
+First, ensure that the `VAULT_ADDR` and `VAULT_TOKEN` environment variables are set, then...
 
-Or install it yourself as:
+The basic summary:
 
-    $ gem install vault-update
+```
+$ vault-update --help
+Safely update Vault secrets (with rollbacks and history!)
 
-## Usage
+Usage:
+       vault-update [options] -p SECRET_PATH KEY VALUE
 
-TODO: Write usage instructions here
+Environment Variables:
+    VAULT_ADDR (required)
+    VAULT_TOKEN (required)
 
-## Development
+Options:
+  -r, --rollback       Roll back to previous release
+  -p, --path=<s>       Secret path to update
+  -s, --history=<i>    Show the last N entries of history
+  -l, --last           Show the last value
+  -h, --help           Show this message
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+## Write a string value to a key
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```
+$ vault-update -p secret/example mykey myvalue
+Applying changes to secret/example:
 
-## Contributing
+-null
++{
++  "mykey": "myvalue"
++}
+```
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/vault-update.
+## Roll the secret back to its previous value
+
+```
+$ vault-update -p secret/example -r
+Writing to secret/example:
+{"mykey":"myvalue"}
+```
 
 
-## License
+## Show the current contents of the secret
 
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+```
+$ vault-update -p secret/example -c
+{
+  "mykey": "myvalue"
+}
+```
 
+## Show the previous value (but do not roll back)
+
+```
+$ vault-update -p secret/example -l
+{
+  "mykey": "oldvalue"
+}
+```
+
+## Show the last N history entries
+
+```
+$ vault-update -p secret/example -s 2
+2016-10-26 17:14:56 -0400:
+{
+  "mykey": "reallyoldvalue"
+}
+
+2016-10-26 17:15:03 -0400:
+{
+  "mykey": "oldvalue"
+}
+```
+
+# License
+
+The gem is available as open source under the terms of the Apache license.

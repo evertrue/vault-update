@@ -7,12 +7,12 @@ Gem::Specification.new do |spec|
   spec.name          = "vault-update"
   spec.version       = VaultUpdate::VERSION
   spec.authors       = ["Eric Herot"]
-  spec.email         = ["eric.github@herot.com"]
+  spec.email         = ["devops@evertrue.com"]
 
   spec.summary       = %q{Safely updates a Vault secret while also keeping history.}
   # spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
-  spec.license       = "MIT"
+  spec.homepage      = 'https://evertrue.github.io'
+  spec.license       = "Apache"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
