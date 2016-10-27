@@ -11,12 +11,14 @@ class NoUpdateError < StandardError; end
 class VaultUpdate
   def run
     if opts[:history]
-      secret_history.each do |ts, data|
+      history_fetch_size =
+        opts[:history] > secret_history.count ? secret_history.count : opts[:history]
+      secret_history.sort_by { |ts, _data| ts }[-history_fetch_size..-1].each do |ts, data|
         puts "#{Time.at(ts.to_s.to_i)}:"
         puts JSON.pretty_generate(data) + "\n\n"
       end
     elsif opts[:last]
-      puts JSON.pretty_generate(secret_history.sort_by { |ts, _data| ts }[-opts[:history]..-1][1])
+      puts JSON.pretty_generate(secret_history.sort_by { |ts, _data| ts }.last[1])
     elsif opts[:rollback]
       rollback_secret
     elsif opts[:current]
