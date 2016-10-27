@@ -11,8 +11,6 @@ class NoUpdateError < StandardError; end
 class VaultUpdate
   def run
     if opts[:history]
-      history_fetch_size =
-        opts[:history] > secret_history.count ? secret_history.count : opts[:history]
       secret_history.sort_by { |ts, _data| ts }[-history_fetch_size..-1].each do |ts, data|
         puts "#{Time.at(ts.to_s.to_i)}:"
         puts JSON.pretty_generate(data) + "\n\n"
@@ -39,6 +37,10 @@ class VaultUpdate
 
   private
 
+  def history_fetch_size
+    opts[:history] > secret_history.count ? secret_history.count : opts[:history]
+  end
+
   def update
     update_value = ARGV.pop
 
@@ -53,7 +55,7 @@ class VaultUpdate
 
     update_key = ARGV.pop
 
-    raise(MissingInputError) unless (update_key && update_value)
+    raise(MissingInputError) unless update_key && update_value
 
     update_secret update_key.to_sym => update_value
   end
@@ -132,7 +134,7 @@ class VaultUpdate
         opt :last, 'Show the last value', short: 'l'
         opt :current, 'Show the current contents of the secret', short: 'c'
       end
-      raise 'VAULT_ADDR and VAULT_TOKEN must be set' unless (ENV['VAULT_ADDR'] && ENV['VAULT_TOKEN'])
+      raise 'VAULT_ADDR and VAULT_TOKEN must be set' unless ENV['VAULT_ADDR'] && ENV['VAULT_TOKEN']
       opts
     end
   end
