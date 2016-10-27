@@ -1,0 +1,33 @@
+Metrics/LineLength:
+  Max: 100
+
+Metrics/MethodLength:
+  Max: 50
+
+Metrics/ClassLength:
+  Max: 300
+
+# Lining up the attributes of some methods is advantageous for readability
+Style/SpaceBeforeFirstArg:
+  Enabled: false
+
+Style/ExtraSpacing:
+  Enabled: false
+
+Style/SpaceAroundOperators:
+  Enabled: false
+
+Documentation:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Max: 12
+
+Metrics/PerceivedComplexity:
+  Max: 12
+
+Metrics/AbcSize:
+  Max: 50
+
+Style/FileName:
+  Enabled: false
