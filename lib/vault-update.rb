@@ -17,7 +17,9 @@ class VaultUpdate
         puts JSON.pretty_generate(data) + "\n\n"
       end
     elsif opts[:last]
-      puts JSON.pretty_generate(secret_history.sort_by { |ts, _data| ts }.last[1])
+      puts JSON.pretty_generate(
+        (secret_history.sort_by { |ts, _data| ts }.last || fail(NoHistoryError))[1]
+      )
     elsif opts[:rollback]
       rollback_secret
     elsif opts[:current]
