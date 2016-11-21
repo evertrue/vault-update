@@ -3,6 +3,7 @@ require 'vault'
 require 'trollop'
 require 'json'
 require 'diffy'
+require 'facets'
 
 class MissingInputError < StandardError; end
 class NoHistoryError < StandardError; end
@@ -44,7 +45,7 @@ class VaultUpdate
   private
 
   def history_fetch_size
-    opts[:history] > secret_history.count ? secret_history.count : opts[:history]
+    opts[:history] > secret_history.keys.count ? secret_history.keys.count : opts[:history]
   end
 
   def update
@@ -86,10 +87,10 @@ class VaultUpdate
 
   def update_secret(update_hash)
     data =
-      if (current_secret_value = vault_read opts[:path])
+      if (current_secret_value = vault_read(opts[:path]).stringify_keys)
         secret_history[Time.now.to_i] = current_secret_value
         vault_write "#{opts[:path]}_history", secret_history
-        current_secret_value.merge(update_hash)
+        current_secret_value.merge(update_hash.stringify_keys)
       else
         update_hash
       end
