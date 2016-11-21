@@ -73,7 +73,7 @@ class VaultUpdate
   end
 
   def rollback_secret
-    raise NoHistoryError unless previous_update
+    fail NoHistoryError unless previous_update
     current_secret_value = vault_read opts[:path]
 
     # Update history with {} if empty now
@@ -99,7 +99,7 @@ class VaultUpdate
       puts "update_hash: #{update_hash}"
     end
 
-    raise NoUpdateError if current_secret_value == data
+    fail NoUpdateError if current_secret_value == data
 
     puts "Applying changes to #{opts[:path]}:\n\n"
     puts Diffy::Diff.new(
@@ -142,7 +142,7 @@ class VaultUpdate
         opt :last, 'Show the last value', short: 'l'
         opt :current, 'Show the current contents of the secret', short: 'c'
       end
-      raise 'VAULT_ADDR and VAULT_TOKEN must be set' unless ENV['VAULT_ADDR'] && ENV['VAULT_TOKEN']
+      fail 'VAULT_ADDR and VAULT_TOKEN must be set' unless ENV['VAULT_ADDR'] && ENV['VAULT_TOKEN']
       opts
     end
   end
