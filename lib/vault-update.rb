@@ -50,20 +50,22 @@ class VaultUpdate
   def update
     update_value = ARGV.pop
 
+    json_value = true
+
     # JSON is optional in the value field, so we have this funny business
     update_value = (
       begin
         JSON.parse update_value
       rescue JSON::ParserError
+        json_value = false
         update_value
       end
     )
 
     update_key = ARGV.pop
 
-    raise(MissingInputError) unless update_key && update_value
-
-    update_secret update_key.to_sym => update_value
+    raise(MissingInputError) unless json_value || update_key
+    update_secret(json_value ? update_value : { update_key.to_sym => update_value })
   end
 
   def debug?
