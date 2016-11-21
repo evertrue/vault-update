@@ -7,6 +7,7 @@ require 'diffy'
 class MissingInputError < StandardError; end
 class NoHistoryError < StandardError; end
 class NoUpdateError < StandardError; end
+class NoValueError < StandardError; end
 
 class VaultUpdate
   def run
@@ -20,7 +21,7 @@ class VaultUpdate
     elsif opts[:rollback]
       rollback_secret
     elsif opts[:current]
-      puts JSON.pretty_generate(vault_read(opts[:path]))
+      puts JSON.pretty_generate(vault_read(opts[:path]) || fail(NoValueError))
     else
       update
     end
@@ -33,6 +34,9 @@ class VaultUpdate
   rescue NoHistoryError
     puts "ERROR: There is no history for #{opts[:path]}"
     exit 2
+  rescue NoValueError
+    puts "ERROR: There is no current value for #{opts[:path]}"
+    exit 3
   end
 
   private
