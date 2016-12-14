@@ -35,6 +35,20 @@ Options:
   -h, --help           Show this message
 ```
 
+## Create a completely new key OR update a path without specifing a key separately
+
+If valid JSON is specified on the command line (enclosed in single quotes), separate key and value arguments are not required. The JSON blob is merged "whole hog" with the existing value for the specified path.
+
+```
+$ vault-update -p secret/example '{"mykey": "myvalue"}'
+Applying changes to secret/example:
+
+-null
++{
++  "mykey": "myvalue"
++}
+```
+
 ## Write a string value to a key
 
 ```
