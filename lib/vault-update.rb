@@ -33,7 +33,7 @@ class VaultUpdate
     raise e unless e.class == TypeError && e.message == 'no implicit conversion of nil into String'
     Trollop.die 'KEY and VALUE must be provided'
   rescue NoUpdateError
-    puts 'Nothing to do'.colorize(:light_white)
+    puts 'Nothing to do'
     exit 0
   rescue NoHistoryError
     puts 'ERROR: '.colorize(:red) + "There is no history for #{opts[:path]}"
