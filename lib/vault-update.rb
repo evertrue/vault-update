@@ -129,6 +129,7 @@ class VaultUpdate
   def opts
     @opts ||= begin
       opts = Trollop.options do
+        version "vault-update #{VaultUpdate::VERSION} (c) 2017 Evertrue"
         banner(
           "Safely update Vault secrets (with rollbacks and history!)\n\n" \
           "Usage:\n" \
@@ -144,7 +145,9 @@ class VaultUpdate
         opt :last, 'Show the last value', short: 'l'
         opt :current, 'Show the current contents of the secret', short: 'c'
       end
+
       fail 'VAULT_ADDR and VAULT_TOKEN must be set' unless ENV['VAULT_ADDR'] && ENV['VAULT_TOKEN']
+
       opts
     end
   end
