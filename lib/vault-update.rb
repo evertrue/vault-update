@@ -111,8 +111,15 @@ class VaultUpdate
     puts "data: ".colorize(:blue) + data.inspect if debug?
 
     puts "Applying changes to #{opts[:path]}:\n".bold
+
     puts Diffy::Diff.new(
-      JSON.pretty_generate(current_secret_value) + "\n", # What to do if no existing content
+      (
+        if current_secret_value
+          JSON.pretty_generate(current_secret_value) + "\n" #
+        else
+          "\n"
+        end
+      ),
       JSON.pretty_generate(data) + "\n"
     ).to_s(:color)
 
